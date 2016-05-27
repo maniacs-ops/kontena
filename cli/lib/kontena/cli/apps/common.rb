@@ -22,7 +22,7 @@ module Kontena::Cli::Apps
       outcome = reader.execute
       hint_on_validation_notifications(outcome[:notifications]) if outcome[:notifications].size > 0
       abort_on_validation_errors(outcome[:errors]) if outcome[:errors].size > 0
-      kontena_services = generate_services(outcome[:services], reader.v2?)
+      kontena_services = generate_services(outcome[:services], outcome[:version])
       kontena_services.delete_if { |name, service| !service_list.include?(name)} unless service_list.empty?
       kontena_services
     end
