@@ -74,6 +74,7 @@ describe Kontena::Workers::NodeInfoWorker do
   describe '#publish_node_info' do
     before(:each) do
       allow(subject.wrapped_object).to receive(:interface_ip).with('eth1').and_return('192.168.66.2')
+      allow(subject.wrapped_object).to receive(:version).and_return('1.2.3')
     end
 
     it 'adds node info to queue' do
@@ -99,6 +100,12 @@ describe Kontena::Workers::NodeInfoWorker do
       info = subject.queue.pop
       expect(info[:data]['PrivateIp']).to eq('192.168.66.2')
     end
+
+    it 'contains agent_version' do
+      subject.publish_node_info
+      info = subject.queue.pop
+      expect(info[:data]['AgentVersion']).to eq('1.2.3')
+    end
   end
 
   describe '#publish_node_stats' do
@@ -106,6 +113,12 @@ describe Kontena::Workers::NodeInfoWorker do
       expect {
         subject.publish_node_stats
       }.to change{ subject.queue.length }.by(1)
+    end
+  end
+
+  describe '#version' do
+    it 'returns correct version' do
+      expect(subject.version).to eq('0.13.2')
     end
   end
 end

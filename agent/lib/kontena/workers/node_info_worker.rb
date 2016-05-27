@@ -60,6 +60,7 @@ module Kontena::Workers
       info 'publishing node information'
       docker_info['PublicIp'] = self.public_ip
       docker_info['PrivateIp'] = self.private_ip
+      docker_info['AgentVersion'] = self.version
       event = {
           event: 'node:info',
           data: docker_info
@@ -170,6 +171,11 @@ module Kontena::Workers
     # @return [Hash]
     def docker_info
       @docker_info ||= Docker.info
+    end
+
+    # @return [String]
+    def version
+      @version ||= File.read(File.realpath(File.join(__dir__, '../../../VERSION'))).strip
     end
   end
 end
